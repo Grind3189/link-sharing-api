@@ -24,7 +24,6 @@ export const register = async (req, res, next) => {
       password: hashedPassword
     })
 
-
     const user = await newUser.save()
     const profile = new Profile({
       name: "",
@@ -46,9 +45,14 @@ export const register = async (req, res, next) => {
     const payload = { userId: user._id }
     const token = jwt.sign(payload, jwtKey, { expiresIn: "12h" })
     res
-      .cookie("accessToken", token, { httpOnly: true })
+      .cookie("accessToken", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        origin: "https://yourdevlinks.netlify.app"
+      })
       .status(201)
-      .send({userId: user._id})
+      .send({ userId: user._id })
   } catch (err) {
     next(err)
   }
@@ -72,17 +76,25 @@ export const login = async (req, res, next) => {
     const token = jwt.sign(payload, jwtKey, { expiresIn: "12h" })
     console.log(token)
     res
-      .cookie("accessToken", token, { httpOnly: true })
+      .cookie("accessToken", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        origin: "https://yourdevlinks.netlify.app"
+      })
       .status(200)
-      .json({userId: user._id})
+      .json({ userId: user._id })
   } catch (err) {
     next(err)
   }
 }
 
 export const logout = async (req, res, next) => {
-  res.clearCookie("accessToken", {
-    sameSite:"none",
-    secure: true
-  }).status(200).send("User has been logged out.")
+  res
+    .clearCookie("accessToken", {
+      sameSite: "none",
+      secure: true
+    })
+    .status(200)
+    .send("User has been logged out.")
 }
