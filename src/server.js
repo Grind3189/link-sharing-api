@@ -10,7 +10,7 @@ import cors from "cors"
 dotenv.config()
 const app = express()
 const corsOptions = {
-  origin: ["https://yourdevlinks.netlify.app", "http://localhost:5173"],
+  origin: "https://yourdevlinks.netlify.app",
   methods: "GET, POST, PUT, DELETE",
   credentials: true
 }
